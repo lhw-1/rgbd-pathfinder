@@ -1,19 +1,81 @@
 # rgbd-pathfinder
-A script that takes in an RGB-D image and finds a traversable path &amp; direction using image segmentation.
+
+RGBD-Pathfinder is a script that uses an RGB / RGB-D Image and finds a traversable path and direction using image segmentation.
 
 ---
 
-## Running the Script
+## Installation
 
-1. Install the requirements using the given `requirements.txt` file.
-Command:
+Before the installation, it's a good idea to start a new conda environment, though not necessary.
+
 ```
+conda create --name my_env python=3.8
+conda activate my_env
+```
+
+RGBD-Pathfinder currently relies on two separate tools that need to be installed:
+
+1. The [Dense Prediction Transformer (DPT)](https://github.com/isl-org/DPT) predicts the Depth image from the given RGB Image. **If you have access to the Depth Image, you may skip this step.**
+2. The [Mask2Former Segmentation tool](https://github.com/facebookresearch/Mask2Former) is used to perform Image Segmentation on the given RGB Image.
+
+Using the following commands, install the Dense Prediction Transformer. Note that we use the monocular depth estimation model (default) for the DPT.
+
+```
+git clone https://github.com/isl-org/DPT.git
+cd DPT/weights/
+wget https://github.com/intel-isl/DPT/releases/download/1_0/dpt_hybrid-midas-501f0c75.pt
+cd ..
 pip install -r requirements.txt
 ```
 
-2. In the `input/` directory, put in the necessary inputs.
-3. Run the command `python3 script.py [IMAGE NAME].jpg`.
-4. The output will be stored in the `output/` directory.
+Next, install the Mask2Former Segmentation tool. To do this, we first install some essential libraries:
+
+```
+conda install pytorch==1.9.0 torchvision==0.10.0 cudatoolkit=11.1 -c pytorch -c nvidia
+pip install -U opencv-python
+```
+
+Make sure that you are installing the correct CUDA versions for your system GPU. The version for `pytorch` and `torchvision` may also differ depending on your CUDA version.
+
+We then install the Object Detection tool, `detectron2`:
+
+```
+git clone git@github.com:facebookresearch/detectron2.git
+cd detectron2
+pip install -e .
+pip install git+https://github.com/cocodataset/panopticapi.git
+pip install git+https://github.com/mcordts/cityscapesScripts.git
+```
+
+You may check [here](https://detectron2.readthedocs.io/en/latest/tutorials/install.html) for more information.
+
+Next, we install the Mask2Former tool itself:
+
+```
+cd ..
+git clone git@github.com:facebookresearch/Mask2Former.git
+cd Mask2Former
+pip install -r requirements.txt
+cd mask2former/modeling/pixel_decoder/ops
+sh make.sh
+```
+
+Finally, we install the dependencies for the RGBD-Pathfinder:
+
+```
+cd ..
+git clone https://github.com/lhw-1/rgbd-pathfinder.git
+cd rgbd-pathfinder
+pip install -r requirements.txt
+```
+
+---
+
+## Running the RGBD-Pathfinder
+
+1. In the `input/` directory, put in the necessary inputs.
+2. Run the command `python3 script.py [IMAGE NAME].jpg`.
+3. The output will be stored in the `output/` directory.
 
 (Currently only supports a single image. Will be extended in the future to support videos / multiple images.)
 
