@@ -85,18 +85,22 @@ pip install -r requirements.txt
 ## Running the RGBD-Pathfinder
 
 1. In the `input/` directory, put in the necessary inputs.
-2. Run the command `Bash run.sh [IMAGE NAME WITHOUT FILE EXTENSION]` if on Windows, or `./run.sh [IMAGE NAME WITHOUT FILE EXTENSION]` if on Linux.
+2. Run the command `Bash run.sh [IMAGE NAME WITH FILE EXTENSION]` if on Windows, or `./run.sh [IMAGE NAME WITH FILE EXTENSION]` if on Linux.
 3. The results will be displayed once the process has finished.
 
 (Currently only supports a single image. Will be extended in the future to support videos / multiple images.)
+
+### Using different Mask2Former Models
+
+To use different Mask2Former models, change Line 15 of `run.sh` to the corresponding download link of your preferred model, and change the model and configuration file used in Line 18 of `run.sh`. Refer to [this guide](https://github.com/facebookresearch/Mask2Former/blob/main/GETTING_STARTED.md) for more information. 
 
 ---
 
 ## What it currently does:
 
-The current script only handles the conversion from RGB Image to Depth Image using DPT.
+The current script only handles the conversion from RGB Image to Depth Image using DPT, and the conversion from RGB Image to Image Segmentation using the ADE20K model of the Mask2Former Segmentation Tool.
 
-The next step will be to handle the Mask2Former Segmentation on the RGB Image.
+The next step will be to handle the RGBD-Pathfinder Implementation.
 
 ---
 
