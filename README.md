@@ -17,8 +17,8 @@ Additionally, install the following essential libraries:
 
 ```
 conda install pytorch==1.9.0 torchvision==0.10.0 cudatoolkit=11.1 -c pytorch -c nvidia
-pip install -U opencv-python
 ```
+
 Make sure that you are installing the correct CUDA versions for your system GPU. The versions for `pytorch` and `torchvision` that needs to be installed may also differ depending on your CUDA version.
 
 RGBD-Pathfinder relies on two separate tools that need to be installed together. 
@@ -28,7 +28,7 @@ RGBD-Pathfinder relies on two separate tools that need to be installed together.
 
 ### Installation: Dense Prediction Transformer (DPT)
 
-Install the Dense Prediction Transformer using the following commands. Note that we are currently using the monocular depth estimation model (by default).
+Install the Dense Prediction Transformer using the following commands. Note that we are currently using the monocular depth estimation model (by default). **Note: Do NOT install the dependencies of the `requirements.txt` for DPT, as they are outdated. The updated dependencies are covered by the `requirements.txt` of RGBD-Pathfinder instead.**
 
 As mentioned above, this step may be skipped if you already have access to the Depth Image.
 
@@ -36,8 +36,6 @@ As mentioned above, this step may be skipped if you already have access to the D
 git clone https://github.com/isl-org/DPT.git
 cd DPT/weights/
 wget https://github.com/intel-isl/DPT/releases/download/1_0/dpt_hybrid-midas-501f0c75.pt
-cd ..
-pip install -r requirements.txt
 ```
 
 ### Installation: Mask2Former Segmentation Tool
@@ -47,7 +45,7 @@ Install the Mask2Former Segmentation Tool using the following commands.
 We first need to install the base Object Detection module, `detectron2`:
 
 ```
-cd ..
+cd ../../
 git clone https://github.com/facebookresearch/detectron2.git
 cd detectron2
 pip install -e .
@@ -76,22 +74,35 @@ cd ..
 git clone https://github.com/lhw-1/rgbd-pathfinder.git
 cd rgbd-pathfinder
 pip install -r requirements.txt
+pip install -U opencv-python
 sh init.sh
+```
+
+### Known Problems
+
+In some cases, `detectron2` may need to be rebuilt if PyTorch was re-installed during the installation process.
+
+To rebuild `detectron2` from your working directory:
+
+```
+cd detectron2/
+rm -rf build/ **/*.so
+python -m pip install -e .
 ```
 
 ---
 
 ## Running the RGBD-Pathfinder
 
-1. In the `input/` directory, put in the necessary inputs.
-2. Run the command `Bash run.sh [IMAGE NAME WITH FILE EXTENSION]` if on Windows, or `./run.sh [IMAGE NAME WITH FILE EXTENSION]` if on Linux.
+1. Copy the RGB Image into the `input/` directory.
+2. Run the command `Bash run.sh [IMAGE NAME WITH FILE EXTENSION]` if on Windows, or `sh run.sh [IMAGE NAME WITH FILE EXTENSION]` if on Linux.
 3. The results will be displayed once the process has finished.
 
 (Currently only supports a single image. Will be extended in the future to support videos / multiple images.)
 
 ### Using different Mask2Former Models
 
-To use different Mask2Former models, change Line 15 of `run.sh` to the corresponding download link of your preferred model, and change the model and configuration file used in Line 18 of `run.sh`. Refer to [this guide](https://github.com/facebookresearch/Mask2Former/blob/main/GETTING_STARTED.md) for more information. 
+To use different Mask2Former models, change Line 19 of `run.sh` to the corresponding download link of your preferred model, and change the model and configuration file used in Line 22 of `run.sh`. Refer to [this guide](https://github.com/facebookresearch/Mask2Former/blob/main/GETTING_STARTED.md) for more information. 
 
 ---
 
