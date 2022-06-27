@@ -102,7 +102,7 @@ python -m pip install -e .
 
 ### Using different Mask2Former Models
 
-To use different Mask2Former models, change Line 19 of `run.sh` to the corresponding download link of your preferred model, and change the model and configuration file used in Line 22 of `run.sh`. Refer to [this guide](https://github.com/facebookresearch/Mask2Former/blob/main/GETTING_STARTED.md) for more information. 
+To use different Mask2Former models, change Line 12 of `init.sh` to the corresponding download link of your preferred model, and change the model and configuration file used in Line 19 of `run.sh`. Refer to [this guide](https://github.com/facebookresearch/Mask2Former/blob/main/GETTING_STARTED.md) for more information. 
 
 ---
 
