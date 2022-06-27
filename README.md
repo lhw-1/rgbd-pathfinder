@@ -2,6 +2,8 @@
 
 RGBD-Pathfinder is a script that takes in an RGB / RGB-D Image, as well as a Goal Destination (represented by vector co-ordinates), and finds a traversable path and direction using obstacle detection and image segmentation.
 
+This project is currently in progress and has not been fully implemented.
+
 ---
 
 ## Installation
