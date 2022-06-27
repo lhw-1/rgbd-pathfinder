@@ -49,7 +49,7 @@ We first need to install the base Object Detection module, `detectron2`:
 ```
 cd ../../
 git clone https://github.com/facebookresearch/detectron2.git
-cd detectron2
+cd detectron2/
 pip install -e .
 pip install git+https://github.com/cocodataset/panopticapi.git
 pip install git+https://github.com/mcordts/cityscapesScripts.git
@@ -62,7 +62,7 @@ Next, we install the Mask2Former tool itself:
 ```
 cd ../
 git clone https://github.com/facebookresearch/Mask2Former.git
-cd Mask2Former
+cd Mask2Former/
 pip install -r requirements.txt
 sh mask2former/modeling/pixel_decoder/ops/make.sh
 ```
@@ -74,7 +74,7 @@ Finally, we install the remaining dependencies for the RGBD-Pathfinder and initi
 ```
 cd ../
 git clone https://github.com/lhw-1/rgbd-pathfinder.git
-cd rgbd-pathfinder
+cd rgbd-pathfinder/
 pip install -r requirements.txt
 pip install -U opencv-python
 sh init.sh
