@@ -1,6 +1,6 @@
-# rgbd-pathfinder
+# RGBD-Pathfinder
 
-RGBD-Pathfinder is a script that uses an RGB / RGB-D Image and finds a traversable path and direction using image segmentation.
+RGBD-Pathfinder is a script that takes in an RGB / RGB-D Image, as well as a Goal Destination (represented by vector co-ordinates), and finds a traversable path and direction using obstacle detection and image segmentation.
 
 ---
 
