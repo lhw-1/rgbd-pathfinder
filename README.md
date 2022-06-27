@@ -95,7 +95,8 @@ python -m pip install -e .
 ## Running the RGBD-Pathfinder
 
 1. Copy the RGB Image into the `input/` directory.
-2. Run the command `Bash run.sh [IMAGE NAME WITH FILE EXTENSION]` if on Windows, or `sh run.sh [IMAGE NAME WITH FILE EXTENSION]` if on Linux.
+2. Run the command `sh run.sh [IMAGE NAME WITH FILE EXTENSION]` if on Linux, or `Bash run.sh [IMAGE NAME WITH FILE EXTENSION]` if on Windows. This currently displays the Depth and Segmentation Images of the original RGB Image given.
+3. Run the command `sh runrgb.sh [IMAGE NAME WITH FILE EXTENSION]` if on Linux, or `Bash runrgb.sh [IMAGE NAME WITH FILE EXTENSION]` if on Windows. This currently displays all possible Nodes inferred from the Goal Vector given, plotted on the original RGB Image given.
 3. The results will be displayed once the process has finished.
 
 (Currently only supports a single image. Will be extended in the future to support videos / multiple images.)
@@ -119,7 +120,7 @@ The next step will be to handle the RGBD-Pathfinder Implementation.
 1. As input, take in two images (1 RGB image and 1 Depth image) as well as a set of coordinates indicating the direction of the goal (may be arbitrary). The RGB image is mandatory. The depth image is specified with the option `--depth`, and the goal vector coordinates are specified with `--goal`. (Optional arguments not implemented yet)
 1.1. Alternatively, take in a single image and use a [Dense Prediction Transformer (DPT)](https://github.com/isl-org/DPT) to produce a Depth image corresponding to the RGB image.
 2. Perform Image Segmentation on the RGB image, using the [Mask2Former Segmentation tool](https://github.com/facebookresearch/Mask2Former).
-3. Through the Image Segmentation, obtain the areas which are considered traversable. This is dependent on the labels available for the specific Image Segmentation model used.
+3. Through the Depths Image and the Image Segmentation, obtain the areas which are considered traversable. This is also dependent on the labels available for the specific Image Segmentation model used.
 4. With the "Traversable Area", use a classical vector method, i.e. starting from the goal vector (input) and slowly rotating it, to find a traversable path that most closely aligns with the goal vector.
 5. Output the Image Segmentation with the output vector as an overlay on top of it, as well as a set of coordinates for the output vector.
 
