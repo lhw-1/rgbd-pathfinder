@@ -60,7 +60,7 @@ You may check [here](https://detectron2.readthedocs.io/en/latest/tutorials/insta
 Next, we install the Mask2Former tool itself:
 
 ```
-cd ..
+cd ../
 git clone https://github.com/facebookresearch/Mask2Former.git
 cd Mask2Former
 pip install -r requirements.txt
@@ -72,7 +72,7 @@ sh mask2former/modeling/pixel_decoder/ops/make.sh
 Finally, we install the remaining dependencies for the RGBD-Pathfinder and initialise the directories:
 
 ```
-cd ..
+cd ../
 git clone https://github.com/lhw-1/rgbd-pathfinder.git
 cd rgbd-pathfinder
 pip install -r requirements.txt
