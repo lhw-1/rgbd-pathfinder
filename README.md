@@ -76,7 +76,7 @@ cd ..
 git clone https://github.com/lhw-1/rgbd-pathfinder.git
 cd rgbd-pathfinder
 pip install -r requirements.txt
-./init.sh
+sh init.sh
 ```
 
 ---
