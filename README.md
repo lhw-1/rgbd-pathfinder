@@ -1,6 +1,6 @@
 # RGBD-Pathfinder
 
-RGBD-Pathfinder is a script that takes in an RGB / RGB-D Image, as well as a Goal Destination (represented by vector co-ordinates), and finds a traversable path and direction using obstacle detection and image segmentation.
+RGBD-Pathfinder is a script that takes in an RGB / RGB-D Image, as well as a Goal Destination (represented by a single set of pixel co-ordinates), and finds a traversable path and direction using image segmentation and obstacle detection.
 
 This project is currently in progress and has not been fully implemented.
 
@@ -18,7 +18,7 @@ conda activate my_env
 Additionally, install the following essential libraries:
 
 ```
-conda install pytorch==1.9.0 torchvision==0.10.0 cudatoolkit=11.1 -c pytorch -c nvidia
+conda install pytorch==1.9.0 torchvision==0.10.0 cudatoolkit=11.1 opencv-python -c pytorch -c nvidia
 ```
 
 Make sure that you are installing the correct CUDA versions for your system GPU. The versions for `pytorch` and `torchvision` that needs to be installed may also differ depending on your CUDA version.
@@ -64,7 +64,8 @@ cd ../
 git clone https://github.com/facebookresearch/Mask2Former.git
 cd Mask2Former/
 pip install -r requirements.txt
-sh mask2former/modeling/pixel_decoder/ops/make.sh
+cd mask2former/modeling/pixel_decoder/ops/
+sh make.sh
 ```
 
 ### Installation: RGBD-Pathfinder
@@ -76,7 +77,6 @@ cd ../
 git clone https://github.com/lhw-1/rgbd-pathfinder.git
 cd rgbd-pathfinder/
 pip install -r requirements.txt
-pip install -U opencv-python
 sh init.sh
 ```
 

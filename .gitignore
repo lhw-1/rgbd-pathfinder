@@ -1,3 +1,4 @@
 # Data directories
 input/*
 data/*
+src/*.png
