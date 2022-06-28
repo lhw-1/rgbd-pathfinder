@@ -9,7 +9,7 @@ from PIL import Image
 '''
 This script (plot.py) handles plotting various vectors / nodes onto the RGB Image.
 A few PNG files (notably, "goal.png", "convert.png", and "combine.png") are created and removed as the script runs.
-The final result is saved under data/RGBDP_output/ as "
+The final result is saved under data/RGBDP_output/ as "$FILENAME.png".
 
 '''
 
@@ -38,6 +38,16 @@ def convert_white(img_file):
             newData.append(item)
     img.putdata(newData)
     img.save("convert.png", "PNG")
+
+def convert_bev(img_file):
+    '''
+    Converts the given image to a Bird's Eye View.
+    Saves the result as a PNG file named "convert_bev.png".
+
+    Params:
+        img_file: The file path for the RGB image to be converted.
+    '''
+    return
 
 def combine_images(bg_img_file, bg_img_w, bg_img_h, fg_img_file):
     '''
