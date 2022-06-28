@@ -16,7 +16,7 @@ The final result is saved under data/RGBDP_output/ as "
 # TODO: Modify Origin to be Eye-level instead of Bottom
 # TODO: Integrate Depth and Segmentation
 
-NODE_ANGLES = [-90, -75, -60, -45, -30, -15, 0, 15, 30, 45, 60, 75, 90]
+NODE_ANGLES = [-90, -80, -70, -60, -50, -40, -30, -20, -10, 0, 10, 20, 30, 40, 50, 60, 70, 80, 90]
 
 def convert_white(img_file):
     '''
