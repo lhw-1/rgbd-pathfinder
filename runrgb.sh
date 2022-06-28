@@ -8,4 +8,4 @@ cd src/
 python3 plot.py $FILE
 cp combine.png ../data/RGBDP_output/$FILENAME.png
 rm *.png
-xgb-open ../data/RGBDP_output/$FILENAME.png
+xdg-open ../data/RGBDP_output/$FILENAME.png
