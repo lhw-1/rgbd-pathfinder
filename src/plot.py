@@ -1,3 +1,4 @@
+import cv2
 import math
 import matplotlib.pyplot as plt
 import matplotlib.image as img
@@ -39,7 +40,7 @@ def convert_white(img_file):
     img.putdata(newData)
     img.save("convert.png", "PNG")
 
-def convert_bev(img_file):
+def convert_bev(img_file, img_w, img_h):
     '''
     Converts the given image to a Bird's Eye View.
     Saves the result as a PNG file named "convert_bev.png".
@@ -47,7 +48,17 @@ def convert_bev(img_file):
     Params:
         img_file: The file path for the RGB image to be converted.
     '''
-    return
+
+    src = np.float32([[0, 0], [0, img_h], [0, 0], [img_w, 0]])
+    dst = np.float32([[0, 0], [0, img_h], [0, 0], [img_w, 0]])
+    M = cv2.getPerspectiveTransform(src, dst) # The transformation matrix
+    Minv = cv2.getPerspectiveTransform(dst, src) # Inverse transformation
+
+    img = cv2.imread(img_file) # Read the test img
+    warped_img = cv2.warpPerspective(img, Minv, (img_w, img_h)) # Image warping
+    plt.imsave('test.png', cv2.cvtColor(warped_img, cv2.COLOR_BGR2RGB)) # Show results
+    # plt.imsave('test.png', warped_img)
+
 
 def combine_images(bg_img_file, bg_img_w, bg_img_h, fg_img_file):
     '''
@@ -158,6 +169,9 @@ def plot_goal_and_nodes(rgb_img_file, rgb_img_w, rgb_img_h, goal_vector):
     # Remove the axes from view and save it as an image
     plt.axis('off')
     plt.savefig('goal.png', bbox_inches = 'tight', pad_inches = 0)
+
+    # TODO: Test Bird Eye View Conversion
+    convert_bev(rgb_img_file, rgb_img_w, rgb_img_h)
 
     # Convert all white pixels to be transparent
     convert_white('goal.png')

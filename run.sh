@@ -11,7 +11,7 @@ rm input/$FILE
 rm output_monodepth/$FILENAME.png
 rm output_monodepth/$FILENAME.pfm
 cd ../
-xdg-open rgbd-pathfinder/data/DPT_output/$FILENAME.png
+eog rgbd-pathfinder/data/DPT_output/$FILENAME.png
 
 # Mask2Former Segmentation
 cp rgbd-pathfinder/input/$FILE Mask2Former/demo/$FILE
@@ -22,7 +22,7 @@ cd ..
 cp outputs/$FILE ../rgbd-pathfinder/data/M2F_output/
 rm demo/$FILE
 rm outputs/$FILE
-xdg-open ../rgbd-pathfinder/data/M2F_output/$FILE
+eog ../rgbd-pathfinder/data/M2F_output/$FILE
 
 # RGBD-Pathfinder
 cd ../rgbd-pathfinder/

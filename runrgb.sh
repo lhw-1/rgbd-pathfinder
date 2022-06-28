@@ -7,5 +7,5 @@ FILENAME="${FILE%.*}"
 cd src/
 python3 plot.py $FILE
 cp combine.png ../data/RGBDP_output/$FILENAME.png
-rm *.png
-xdg-open ../data/RGBDP_output/$FILENAME.png
+# rm *.png
+# eog ../data/RGBDP_output/$FILENAME.png
