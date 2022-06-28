@@ -1,6 +1,8 @@
-# rgbd-pathfinder
+# RGBD-Pathfinder
 
-RGBD-Pathfinder is a script that uses an RGB / RGB-D Image and finds a traversable path and direction using image segmentation.
+RGBD-Pathfinder is a script that takes in an RGB / RGB-D Image, as well as a Goal Destination (represented by vector co-ordinates), and finds a traversable path and direction using obstacle detection and image segmentation.
+
+This project is currently in progress and has not been fully implemented.
 
 ---
 
@@ -47,7 +49,7 @@ We first need to install the base Object Detection module, `detectron2`:
 ```
 cd ../../
 git clone https://github.com/facebookresearch/detectron2.git
-cd detectron2
+cd detectron2/
 pip install -e .
 pip install git+https://github.com/cocodataset/panopticapi.git
 pip install git+https://github.com/mcordts/cityscapesScripts.git
@@ -58,9 +60,9 @@ You may check [here](https://detectron2.readthedocs.io/en/latest/tutorials/insta
 Next, we install the Mask2Former tool itself:
 
 ```
-cd ..
+cd ../
 git clone https://github.com/facebookresearch/Mask2Former.git
-cd Mask2Former
+cd Mask2Former/
 pip install -r requirements.txt
 sh mask2former/modeling/pixel_decoder/ops/make.sh
 ```
@@ -70,9 +72,9 @@ sh mask2former/modeling/pixel_decoder/ops/make.sh
 Finally, we install the remaining dependencies for the RGBD-Pathfinder and initialise the directories:
 
 ```
-cd ..
+cd ../
 git clone https://github.com/lhw-1/rgbd-pathfinder.git
-cd rgbd-pathfinder
+cd rgbd-pathfinder/
 pip install -r requirements.txt
 pip install -U opencv-python
 sh init.sh
@@ -109,9 +111,13 @@ To use different Mask2Former models, change Line 12 of `init.sh` to the correspo
 
 ## What it currently does:
 
-The current script only handles the conversion from RGB Image to Depth Image using DPT, and the conversion from RGB Image to Image Segmentation using the ADE20K model of the Mask2Former Segmentation Tool.
+The current script only handles the following:
+- Conversion from RGB Image to Depth Image using DPT.
+- Conversion from RGB Image to Image Segmentation using the ADE20K model of the Mask2Former Segmentation Tool.
+- Calculation and Plotting of all available Nodes, inferred through the given Goal Vector, onto the RGB Image.
 
-The next step will be to handle the RGBD-Pathfinder Implementation.
+The next step is to integrate the Depth Image and the Segmentation Image, and prune Nodes using them.
+Another issue is to modify the current Origin from the Bottom to Eye-Level.
 
 ---
 
