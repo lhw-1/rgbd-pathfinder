@@ -111,11 +111,12 @@ To use different Mask2Former models, make changes in `bin/init.sh` to the corres
 
 ## What it currently does:
 
-The current script only handles the following:
+The current script handles the following:
 - Conversion from RGB Image to Depth Image using DPT.
 - Conversion from RGB Image to Image Segmentation using the ADE20K model of the Mask2Former Segmentation Tool.
+- Calculation of Traversable Paths inferred from the Image Segmentation, and Plotting the Paths accordingly onto the original RGB Image.
+- Instructions for the agent to follow according to the Traversable Paths, depending on the location of the Goal Destination relative to current position.
 
-The next step is to integrate the Depth Image and the Segmentation Image, and prune Nodes using them.
-Another issue is to modify the current Origin from the Bottom to Eye-Level.
+Currently, pruning paths based on Depths / Obstacle Detection has not been implemented.
 
 ---
