@@ -2,10 +2,12 @@
 # Filename Variables
 FILE="$1"
 FILENAME="${FILE%.*}"
+GOALX="$2"
+GOALY="$3"
 
 # RGBD-Pathfinder
 cd src/
-python3 plot.py $FILE
-cp combine.png ../data/RGBDP_output/$FILENAME.png
+python3 main.py $FILE $2 $3
+# cp combine.png ../data/RGBDP_output/$FILENAME.png
 # rm *.png
 # eog ../data/RGBDP_output/$FILENAME.png

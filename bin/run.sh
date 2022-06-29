@@ -1,6 +1,8 @@
 # Filename Variables
 FILE="$1"
 FILENAME="${FILE%.*}"
+GOALX="$2"
+GOALY="$3"
 
 # Dense Prediction Transformer
 cp input/$FILE ../DPT/input/$FILE
