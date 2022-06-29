@@ -2,3 +2,4 @@
 input/*
 data/*
 src/*.png
+src/__pycache__

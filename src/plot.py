@@ -8,6 +8,9 @@ import sys
 from PIL import Image
 
 '''
+
+DEPRECATED!!!
+
 This script (plot.py) handles plotting various vectors / nodes onto the RGB Image.
 A few PNG files (notably, "goal.png", "convert.png", and "combine.png") are created and removed as the script runs.
 The final result is saved under data/RGBDP_output/ as "$FILENAME.png".

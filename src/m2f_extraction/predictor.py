@@ -52,9 +52,10 @@ class VisualizationDemo(object):
         visualizer = Visualizer(image, self.metadata, instance_mode=self.instance_mode)
         if "panoptic_seg" in predictions:
             panoptic_seg, segments_info = predictions["panoptic_seg"]
-            data = open(r"data.txt", "w")
-            data.write(panoptic_seg)
-            data.close()
+            torch.save(panoptic_seg, 'panoptic_seg.pt')
+            import json
+            with open('segments_info.json', 'w') as fout:
+                json.dump(segments_info, fout)
             vis_output = visualizer.draw_panoptic_seg_predictions(
                 panoptic_seg.to(self.cpu_device), segments_info
             )
