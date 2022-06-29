@@ -1,9 +1,10 @@
-from PIL import Image
+from PIL import Image, ImageDraw
 import json
 import numpy as np
 import random
 import sys
 import torch
+np.set_printoptions(threshold=sys.maxsize)
 
 import register_ade20k_panoptic
 
@@ -45,7 +46,7 @@ def calculate_traversable_paths(panoptic_seg, segments_info):
             if row[i] not in TRAVERSABLE:
                 count = 0
                 row[i] = -1
-            elif i == len(row) - 1 or row[i+1] == -1:
+            elif i == len(row) - 1 or row[i+1] not in TRAVERSABLE:
                 traversable_areas.append({'row': row_idx, 'id': row[i], 'start': i - count, 'end': i})
                 traversable_paths.append({'id': row[i], 'x': int((2 * i - count) / 2), 'y': row_idx})
             else:
@@ -84,7 +85,7 @@ if __name__ == "__main__":
     # TODO: Prune paths that are blocked by obstacles using the Depths Image
     # traversable_paths = prune_semantic_paths(traversable_paths, dpt_img)
 
-    # Plot the traversable paths obtained onto the RGB Image and save as a separate Image
+    # Create a copy of the RGB Image
     rgb_img_map = rgb_img.load()
     rgb_img_traversable = Image.new(rgb_img.mode, rgb_img.size)
     rgb_img_traversable_map = rgb_img_traversable.load()
@@ -92,14 +93,16 @@ if __name__ == "__main__":
         for j in range(rgb_img.size[1]):
                 rgb_img_traversable_map[i,j] = rgb_img_map[i,j]
 
+    # Plot the traversable paths obtained onto the RGB Image
+    draw = ImageDraw.Draw(rgb_img_traversable)
     sample_path = -1
     for path in traversable_paths:
-        rgb_img_traversable_map[path['x'], path['y']] = (255,0,0,255)
-        if path['y'] > int(rgb_img.size[1] / 8) and path['y'] < int(3 * rgb_img.size[1] / 8):
+        # rgb_img_traversable_map[path['x'], path['y']] = (255,0,0,255)
+        draw.ellipse((path['x'] - 2, path['y'] - 2, path['x'] + 2, path['y'] + 2), fill=(255, 0, 0))
+        if path['y'] > (5 * rgb_img.size[1] / 8) and path['y'] < (7 * rgb_img.size[1] / 8):
             sample_path = path['x']
-    rgb_img_traversable.save(RGBDP_PATH + "traversable.png", "PNG")
 
-    # Print out the actions to be taken by the agent
+    # Print out and Plot the Goal Destination for the agent
     # goal_dest = [int(sys.argv[2]), int(sys.argv[3])]
     if sample_path == -1:
         print("No Path Available.")
@@ -109,17 +112,23 @@ if __name__ == "__main__":
         chance = random.randint(1, 30)
         if chance % 3 == 0:
             goal_dest = [random.randint(0, sample_path - 1), int(rgb_img.size[1] / 2)]
-            print("Goal Destination given: " + goal_dest)
+            print("Goal Destination given: " + str(goal_dest))
         elif chance % 3 == 1:
             goal_dest = [random.randint(sample_path + 1, rgb_img.size[0]), int(rgb_img.size[1] / 2)]
-            print("Goal Destination given: " + goal_dest)
+            print("Goal Destination given: " + str(goal_dest))
         else:
             goal_dest = [sample_path, int(rgb_img.size[1] / 2)]
-            print("Goal Destination given: " + goal_dest)
+            print("Goal Destination given: " + str(goal_dest))
+    
+    draw.ellipse((goal_dest[0] - 5, goal_dest[1] - 5, goal_dest[0] + 5, goal_dest[1] + 5), fill=(0, 0, 0))
 
-        if sample_path < goal_dest[0]:
-            print("Action to be taken: Rotate Right")
-        elif sample_path > goal_dest[0]:
-            print("Action to be taken: Rotate Left")
-        else:
-            print("Action to be taken: Move Forward")
+    # Save the copy as a separate Image
+    rgb_img_traversable.save(RGBDP_PATH + "traversable_" + sys.argv[1], "PNG")
+
+    # Print out the actions to be taken by the agent
+    if sample_path < goal_dest[0]:
+        print("Action to be taken: Rotate Right")
+    elif sample_path > goal_dest[0]:
+        print("Action to be taken: Rotate Left")
+    else:
+        print("Action to be taken: Move Forward")
