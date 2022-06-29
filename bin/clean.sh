@@ -1,11 +1,7 @@
-# Filename Variables
-FILE="$1"
-FILENAME="${FILE%.*}"
-
-# Remove Output files from the data/ directory
+# Remove all files from the data/ directory
 cd data/DPT_output/
-rm $FILENAME.*
+rm *
 cd ../M2F_output/
-rm $FILENAME.*
+rm *
 cd ../RGBDP_output/
-rm $FILENAME.*
+rm *

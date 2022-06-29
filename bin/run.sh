@@ -34,3 +34,4 @@ rm outputs/$FILE
 # RGBD-Pathfinder
 cd ../rgbd-pathfinder/src/
 python3 main.py $FILE $2 $3
+eog ../data/RGBDP_output/traversable.png
