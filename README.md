@@ -18,7 +18,8 @@ conda activate my_env
 Additionally, install the following essential libraries:
 
 ```
-conda install pytorch==1.9.0 torchvision==0.10.0 cudatoolkit=11.1 opencv-python -c pytorch -c nvidia
+conda install pytorch==1.9.0 torchvision==0.10.0 cudatoolkit=11.1 -c pytorch -c nvidia
+pip install -U opencv-python
 ```
 
 Make sure that you are installing the correct CUDA versions for your system GPU. The versions for `pytorch` and `torchvision` that needs to be installed may also differ depending on your CUDA version.
