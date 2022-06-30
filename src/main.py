@@ -67,10 +67,10 @@ if __name__ == "__main__":
     # Initialise filenames
     rgb_img_file = RGB_IMAGE_PATH + sys.argv[1]
     rgb_img_name = sys.argv[1].split(".")
-    m2f_img_file = M2F_PATH + sys.argv[1]
+    m2f_img_file = M2F_PATH + 'm2f_' + rgb_img_name[0] + '.png'
     m2f_panoptic_seg_file = M2F_PATH + 'panoptic_seg.pt'
     m2f_segments_info_file = open(M2F_PATH + 'segments_info.json')
-    dpt_img_file = DPT_PATH + rgb_img_name[0] + '.png'
+    dpt_img_file = DPT_PATH + 'dpt_' + rgb_img_name[0] + '.png'
 
     # Read the necessary images and files from the data/ directory
     rgb_img = Image.open(rgb_img_file)
@@ -104,21 +104,28 @@ if __name__ == "__main__":
 
     # Print out and Plot the Goal Destination for the agent
     # goal_dest = [int(sys.argv[2]), int(sys.argv[3])]
+    results = open('results.txt', 'w')
+    results.write(rgb_img_name[0] + '\n')
     if sample_path == -1:
         print("No Path Available.")
         print("Action to be taken: Rotate")
+        results.write("No Path Available." + '\n')
+        results.write("Action to be taken: Rotate" + '\n')
     else:
         # Manual creation of Goal Destination for even testing
         chance = random.randint(1, 30)
         if chance % 3 == 0:
             goal_dest = [random.randint(0, sample_path - 1), int(rgb_img.size[1] / 2)]
             print("Goal Destination given: " + str(goal_dest))
+            results.write("Goal Destination given: " + str(goal_dest) + '\n')
         elif chance % 3 == 1:
             goal_dest = [random.randint(sample_path + 1, rgb_img.size[0]), int(rgb_img.size[1] / 2)]
             print("Goal Destination given: " + str(goal_dest))
+            results.write("Goal Destination given: " + str(goal_dest) + '\n')
         else:
             goal_dest = [sample_path, int(rgb_img.size[1] / 2)]
             print("Goal Destination given: " + str(goal_dest))
+            results.write("Goal Destination given: " + str(goal_dest) + '\n')
     
     draw.ellipse((goal_dest[0] - 5, goal_dest[1] - 5, goal_dest[0] + 5, goal_dest[1] + 5), fill=(0, 0, 0))
 
@@ -128,7 +135,13 @@ if __name__ == "__main__":
     # Print out the actions to be taken by the agent
     if sample_path < goal_dest[0]:
         print("Action to be taken: Rotate Right")
+        results.write("Action to be taken: Rotate Right" + '\n')
     elif sample_path > goal_dest[0]:
         print("Action to be taken: Rotate Left")
+        results.write("Action to be taken: Rotate Left" + '\n')
     else:
         print("Action to be taken: Move Forward")
+        results.write("Action to be taken: Move Forward" + '\n')
+
+    results.write('\n')
+    results.close()

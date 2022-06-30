@@ -3,3 +3,4 @@ input/*
 data/*
 src/*.png
 src/__pycache__
+src/results.txt

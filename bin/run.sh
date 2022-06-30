@@ -16,6 +16,7 @@ cd ../
 # eog rgbd-pathfinder/data/DPT_output/$FILENAME.png
 
 # Mask2Former Segmentation
+# cd ../
 cp rgbd-pathfinder/input/$FILE Mask2Former/demo/$FILE
 cp -f rgbd-pathfinder/src/m2f_extraction/predictor.py Mask2Former/demo/predictor.py
 cd Mask2Former/demo/
