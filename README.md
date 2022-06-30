@@ -8,10 +8,10 @@ This project is currently in progress and has not been fully implemented.
 
 ## Installation
 
-Before the installation, it is recommended to set up a new conda environment (though not mandatory). The code should work with Python >= 3.6.
+Before the installation, it is recommended to set up a new conda environment (though not mandatory). The code should work with Python >= 3.7.
 
 ```
-conda create --name my_env python=3.6
+conda create --name my_env python=3.7
 conda activate my_env
 ```
 
