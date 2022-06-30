@@ -84,35 +84,63 @@ if __name__ == "__main__":
     # TODO: Prune paths that are blocked by obstacles using the Depths Image
     # traversable_paths = prune_semantic_paths(traversable_paths, dpt_img)
 
-    # Obtain the next node from the sample path (currently 1/8 of Image height)
+    # Create a copy of the RGB Image
+    rgb_img_map = rgb_img.load()
+    rgb_img_traversable = Image.new(rgb_img.mode, rgb_img.size)
+    rgb_img_traversable_map = rgb_img_traversable.load()
+    for i in range(rgb_img.size[0]):
+        for j in range(rgb_img.size[1]):
+                rgb_img_traversable_map[i,j] = rgb_img_map[i,j]
+
+    # Plot the traversable paths obtained onto the RGB Image
+    draw = ImageDraw.Draw(rgb_img_traversable)
     sample_path = -1
     for path in traversable_paths:
+        # rgb_img_traversable_map[path['x'], path['y']] = (255,0,0,255)
+        draw.ellipse((path['x'] - 2, path['y'] - 2, path['x'] + 2, path['y'] + 2), fill=(255, 0, 0))
         if path['y'] > (5 * rgb_img.size[1] / 8) and path['y'] < (7 * rgb_img.size[1] / 8):
             sample_path = path['x']
 
     # Print out and Plot the Goal Destination for the agent
     # goal_dest = [int(sys.argv[2]), int(sys.argv[3])]
+    results = open('results.txt', 'a')
+    results.write(rgb_img_name[0] + '\n')
     if sample_path == -1:
         print("No Path Available.")
         print("Action to be taken: Rotate")
+        results.write("No Path Available." + '\n')
+        results.write("Action to be taken: Rotate" + '\n')
     else:
         # Manual creation of Goal Destination for even testing
         chance = random.randint(1, 30)
         if chance % 3 == 0:
             goal_dest = [random.randint(0, sample_path - 1), int(rgb_img.size[1] / 2)]
             print("Goal Destination given: " + str(goal_dest))
+            results.write("Goal Destination given: " + str(goal_dest) + '\n')
         elif chance % 3 == 1:
             goal_dest = [random.randint(sample_path + 1, rgb_img.size[0]), int(rgb_img.size[1] / 2)]
             print("Goal Destination given: " + str(goal_dest))
+            results.write("Goal Destination given: " + str(goal_dest) + '\n')
         else:
             goal_dest = [sample_path, int(rgb_img.size[1] / 2)]
             print("Goal Destination given: " + str(goal_dest))
+            results.write("Goal Destination given: " + str(goal_dest) + '\n')
+    
+    draw.ellipse((goal_dest[0] - 5, goal_dest[1] - 5, goal_dest[0] + 5, goal_dest[1] + 5), fill=(0, 0, 0))
+
+    # Save the copy as a separate Image
+    rgb_img_traversable.save(RGBDP_PATH + "traversable_" + sys.argv[1], "PNG")
 
     # Print out the actions to be taken by the agent
     if sample_path < goal_dest[0]:
         print("Action to be taken: Rotate Right")
+        results.write("Action to be taken: Rotate Right" + '\n')
     elif sample_path > goal_dest[0]:
         print("Action to be taken: Rotate Left")
+        results.write("Action to be taken: Rotate Left" + '\n')
     else:
         print("Action to be taken: Move Forward")
-    
+        results.write("Action to be taken: Move Forward" + '\n')
+
+    results.write('\n')
+    results.close()

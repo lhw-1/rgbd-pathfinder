@@ -99,9 +99,9 @@ python -m pip install -e .
 ## Running the RGBD-Pathfinder
 
 1. Copy the inputs into the `input/` directory. Currently, only images (.jpg / .png) ~~and ROS bag files (.bag)~~ are supported.
-2. Run the command `sh bin/run.sh [IMAGE NAME WITH FILE EXTENSION]`.
-- E.g. `sh bin/run.sh test.jpg`
-- Yet to be implemented: `sh bin/run.sh [IMAGE NAME WITH FILE EXTENSION] [Goal x-coordinate] [Goal y-coordinate]`
+2. Run the command `sh bin/run_demo.sh [IMAGE NAME WITH FILE EXTENSION]`.
+- E.g. `sh bin/run_demo.sh test.jpg`
+- Yet to be implemented: `sh bin/run_demo.sh [IMAGE NAME WITH FILE EXTENSION] [Goal x-coordinate] [Goal y-coordinate]`
 3. The results will be stored in the `data/` directory once the script finishes running. The Depths Image can be found in the `data/DPT_output/` directory, the Segmentation Image can be found in the `data/M2F_output/` directory, and the Traversable Paths Image can be found in the `data/RGBDP_output/` directory.
 
 Currently, the Goal Destination coordinates are randomly generated for testing purposes. Once the testing phase is over, the script will be modified to accommodate custom Goal Destinations.
