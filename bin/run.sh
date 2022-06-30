@@ -8,7 +8,7 @@ GOALY="$3"
 cp input/$FILE ../DPT/input/$FILE
 cd ../DPT/
 python run_monodepth.py
-cp output_monodepth/$FILENAME.png ../rgbd-pathfinder/data/DPT_output/$FILENAME.png
+cp output_monodepth/$FILENAME.png ../rgbd-pathfinder/data/DPT_output/dpt_$FILENAME.png
 rm input/$FILE
 rm output_monodepth/$FILENAME.png
 rm output_monodepth/$FILENAME.pfm
@@ -26,7 +26,7 @@ cp -f segments_info.json ../../rgbd-pathfinder/data/M2F_output/segments_info.jso
 rm panoptic_seg.pt
 rm segments_info.json
 cd ..
-cp outputs/$FILE ../rgbd-pathfinder/data/M2F_output/
+cp outputs/$FILE ../rgbd-pathfinder/data/M2F_output/m2f_$FILENAME.png
 rm demo/$FILE
 rm outputs/$FILE
 # eog ../rgbd-pathfinder/data/M2F_output/$FILE
