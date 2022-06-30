@@ -104,7 +104,7 @@ if __name__ == "__main__":
 
     # Print out and Plot the Goal Destination for the agent
     # goal_dest = [int(sys.argv[2]), int(sys.argv[3])]
-    results = open('results.txt', 'w')
+    results = open('results.txt', 'a')
     results.write(rgb_img_name[0] + '\n')
     if sample_path == -1:
         print("No Path Available.")
