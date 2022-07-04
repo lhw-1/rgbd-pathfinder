@@ -1,7 +1,5 @@
-# Remove all files from the data/ directory
-cd data/DPT_output/
+# Remove all output files from the data/ directory
+cd ../data/m2f_outputs/
 rm *
-cd ../M2F_output/
-rm *
-cd ../RGBDP_output/
+cd ../data/rgbdp_outputs/
 rm *

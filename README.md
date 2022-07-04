@@ -2,7 +2,7 @@
 
 RGBD-Pathfinder is a script that takes in an RGB / RGB-D Image, as well as a Goal Destination (represented by a single set of pixel co-ordinates), and finds a traversable path and direction using image segmentation and obstacle detection.
 
-This project is currently in progress and has not been fully implemented.
+Currently, only image segmentation is used to find a traversable path; obstacle detection has not been implemented.
 
 ---
 
@@ -24,63 +24,46 @@ pip install -U opencv-python
 
 Make sure that you are installing the correct CUDA versions for your system GPU. The versions for `pytorch` and `torchvision` that needs to be installed may also differ depending on your CUDA version.
 
-RGBD-Pathfinder also relies on two separate tools that need to be installed alongside the main repository.
+RGBD-Pathfinder relies on the [Mask2Former Segmentation tool](https://github.com/facebookresearch/Mask2Former), which in turn relies on the [Detectron2](https://github.com/facebookresearch/detectron2) module, to perform Image Segmentation and Visualisation. 
 
-1. The [Dense Prediction Transformer (DPT)](https://github.com/isl-org/DPT) predicts the Depth image from the given RGB Image. **If you have access to the Depth Image, you may skip this step.**
-2. The [Mask2Former Segmentation tool](https://github.com/facebookresearch/Mask2Former) is used to perform Image Segmentation on the given RGB Image.
+### Installation: Mask2Former and Detectron2
 
-### Installation: Dense Prediction Transformer (DPT)
-
-Install the Dense Prediction Transformer using the following commands. Note that we are currently using the monocular depth estimation model (by default). **Note: Do NOT install the dependencies of the `requirements.txt` for DPT, as they are outdated. The updated dependencies are covered by the `requirements.txt` of RGBD-Pathfinder instead.**
-
-As mentioned above, this step may be skipped if you already have access to the Depth Image.
+Install the `detectron2` module using the following commands. From your project root directory:
 
 ```
-git clone https://github.com/isl-org/DPT.git
-cd DPT/weights/
-wget https://github.com/intel-isl/DPT/releases/download/1_0/dpt_hybrid-midas-501f0c75.pt
-cd ../
-```
-
-### Installation: Mask2Former Segmentation Tool
-
-Install the Mask2Former Segmentation Tool using the following commands. 
-
-We first need to install the base Object Detection module, `detectron2`:
-
-```
-cd ../
 git clone https://github.com/facebookresearch/detectron2.git
-cd detectron2/
+cd detectron2
 pip install -e .
 pip install git+https://github.com/cocodataset/panopticapi.git
 pip install git+https://github.com/mcordts/cityscapesScripts.git
 ```
 
-You may check [here](https://detectron2.readthedocs.io/en/latest/tutorials/install.html) for more information regarding `detectron2` installation.
-
-Next, we install the Mask2Former tool itself:
-
-```
-cd ../
-git clone https://github.com/facebookresearch/Mask2Former.git
-cd Mask2Former/
-pip install -r requirements.txt
-cd mask2former/modeling/pixel_decoder/ops/
-sh make.sh
-```
+You may check [here](https://detectron2.readthedocs.io/en/latest/tutorials/install.html) for more information regarding `detectron2` installation. If using Python 3.6 or lower, you may need to install an older version of `detectron2` from source instead.
 
 ### Installation: RGBD-Pathfinder
 
-Finally, we install the remaining dependencies for the RGBD-Pathfinder and initialise the directories:
+Once `detectron2` has been installed, we can install and set up RGBD-Pathfinder.
+
+Use the commands below to clone this repository and download the ADE20K Panoptic Segmentation model:
 
 ```
-cd ../
+cd ..
 git clone https://github.com/lhw-1/rgbd-pathfinder.git
-cd rgbd-pathfinder/
+cd rgbd-pathfinder
 pip install -r requirements.txt
 sh bin/init.sh
+cd data/models/
+wget https://dl.fbaipublicfiles.com/maskformer/mask2former/ade20k/panoptic/maskformer2_R50_bs16_160k/model_final_5c90d4.pkl
+cd ../data/configs/
+curl -o maskformer2_R50_bs16_160k.yaml https://raw.githubusercontent.com/facebookresearch/Mask2Former/main/configs/ade20k/panoptic-segmentation/maskformer2_R50_bs16_160k.yaml
+
 ```
+
+Alternatively, you may download your model of choice from the [Mask2Former Model Zoo](https://github.com/facebookresearch/Mask2Former/blob/main/MODEL_ZOO.md), and the corresponding configuration file from the [Mask2Former Configs](https://github.com/facebookresearch/Mask2Former/tree/main/configs). Refer to [this guide](https://github.com/facebookresearch/Mask2Former/blob/main/GETTING_STARTED.md) for more information on the available models and corresponding configuration files. 
+
+If using a model other than ADE20K, you may also need to modify the list of categories that should be classified as traversable. This list can be found [here](https://github.com/lhw-1/rgbd-pathfinder/blob/main/src/standalone/traversable.py), with instructions on how to do so.
+
+Finally, change Line 10 of `bin/run.sh` to run with the correct model and the configuration file.
 
 ### Known Problems
 
@@ -96,30 +79,24 @@ python -m pip install -e .
 
 ---
 
-## Running the RGBD-Pathfinder
+## Running the Standalone RGBD-Pathfinder
 
-1. Copy the inputs into the `input/` directory. Currently, only images (.jpg / .png) ~~and ROS bag files (.bag)~~ are supported.
-2. Run the command `sh bin/run_demo.sh [IMAGE NAME WITH FILE EXTENSION]`.
-- E.g. `sh bin/run_demo.sh test.jpg`
-- Yet to be implemented: `sh bin/run_demo.sh [IMAGE NAME WITH FILE EXTENSION] [Goal x-coordinate] [Goal y-coordinate]`
-3. The results will be stored in the `data/` directory once the script finishes running. The Depths Image can be found in the `data/DPT_output/` directory, the Segmentation Image can be found in the `data/M2F_output/` directory, and the Traversable Paths Image can be found in the `data/RGBDP_output/` directory.
+1. Copy the inputs into the `data/inputs/` directory. Currently, only images (.jpg / .png) ~~and ROS bag files (.bag)~~ are supported.
+2. Run the command `sh bin/run_demo.sh [IMAGE NAME WITH FILE EXTENSION] [GOAL X-COORDINATE] [GOAL Y-COORDINATE]`.
+* E.g. `sh bin/run.sh test.jpg 100 100`
+3. The results will be stored in the `data/rgbdp_outputs` directory once the script finishes running. 
 
-Currently, the Goal Destination coordinates are randomly generated for testing purposes. Once the testing phase is over, the script will be modified to accommodate custom Goal Destinations.
-
-### Using different Mask2Former Models
-
-To use different Mask2Former models, make changes in `bin/init.sh` to the corresponding download link of your preferred model, and make changes in `bin/run.sh` to the model and configuration file to be used instead. Refer to [this guide](https://github.com/facebookresearch/Mask2Former/blob/main/GETTING_STARTED.md) for more information on the available models and corresponding configuration files. 
+The repository also contains a [ROS Node version](https://github.com/lhw-1/rgbd-pathfinder/tree/main/src/pathfinder_rosnode/) that can be used in conjunction with ROS to issue commands to robotic agents as needed.
 
 ---
 
 ## What it currently does:
 
 The current script handles the following:
-- Conversion from RGB Image to Depth Image using DPT.
-- Conversion from RGB Image to Image Segmentation using the ADE20K model of the Mask2Former Segmentation Tool.
+- Conversion from RGB Image to Image Segmentation using the ADE20K model (default) of the Mask2Former Segmentation Tool.
 - Calculation of Traversable Paths inferred from the Image Segmentation, and Plotting the Paths accordingly onto the original RGB Image.
 - Instructions for the agent to follow according to the Traversable Paths, depending on the location of the Goal Destination relative to current position.
 
-Currently, pruning paths based on Depths / Obstacle Detection has not been implemented.
+Currently, additional pruning of possible traversable paths based on Depths / Obstacle Detection has not been implemented.
 
 ---

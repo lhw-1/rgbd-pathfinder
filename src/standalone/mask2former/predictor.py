@@ -1,5 +1,6 @@
 # Copyright (c) Facebook, Inc. and its affiliates.
 # Copied from: https://github.com/facebookresearch/Mask2Former/blob/main/demo/predictor.py
+# Lines 54-57 has been modified.
 import atexit
 import bisect
 import multiprocessing as mp
@@ -12,7 +13,6 @@ from detectron2.data import MetadataCatalog
 from detectron2.engine.defaults import DefaultPredictor
 from detectron2.utils.video_visualizer import VideoVisualizer
 from detectron2.utils.visualizer import ColorMode, Visualizer
-
 
 class VisualizationDemo(object):
     def __init__(self, cfg, instance_mode=ColorMode.IMAGE, parallel=False):
