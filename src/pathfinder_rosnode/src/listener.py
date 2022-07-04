@@ -48,7 +48,7 @@ def calculate_traversable_paths(panoptic_seg, segments_info):
         row_idx = row_idx + 1
 
     return traversable_areas, traversable_paths
-`
+
 
 def publish_steer(steer = 0.0):
     vel_msg = Twist()
