@@ -50,6 +50,8 @@ Use the commands below to clone this repository and download the ADE20K Panoptic
 cd ..
 git clone https://github.com/lhw-1/rgbd-pathfinder.git
 cd rgbd-pathfinder
+git submodule init
+git submodule update
 pip install -r requirements.txt
 sh bin/init.sh
 cd data/models/
@@ -81,12 +83,12 @@ python -m pip install -e .
 
 ## Running the Standalone RGBD-Pathfinder
 
-1. Copy the inputs into the `data/inputs/` directory. Currently, only images (.jpg / .png) ~~and ROS bag files (.bag)~~ are supported.
+1. Copy the inputs into the `data/inputs/` directory. Currently, only images (.jpg / .png) are supported.
 2. Run the command `sh bin/run_demo.sh [IMAGE NAME WITH FILE EXTENSION] [GOAL X-COORDINATE] [GOAL Y-COORDINATE]`.
 * E.g. `sh bin/run.sh test.jpg 100 100`
 3. The results will be stored in the `data/rgbdp_outputs` directory once the script finishes running. 
 
-The repository also contains a [ROS Node version](https://github.com/lhw-1/rgbd-pathfinder/tree/main/src/pathfinder_rosnode/) that can be used in conjunction with ROS to issue commands to robotic agents as needed.
+The script is also available as a ROS Node [here](https://github.com/lhw-1/rgbd-pathfinder-ros). This allows the script to be used in conjunction with ROS to issue appropriate commands to the robot agent.
 
 ---
 
