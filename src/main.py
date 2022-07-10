@@ -1,16 +1,32 @@
-from PIL import Image, ImageDraw
-import json
+import argparse
+import cv2
+import glob
+import multiprocessing as mp
 import numpy as np
-import random
-import sys
-import torch
+import os
+import time
+import tqdm
+import warnings
 
+# fmt: off
+import sys
+sys.path.insert(1, os.path.join(sys.path[0], '..'))
+# fmt: on
+
+from detectron2.config import get_cfg
+from detectron2.data.detection_utils import read_image
+from detectron2.projects.deeplab import add_deeplab_config
+from detectron2.utils.logger import setup_logger
+from PIL import Image, ImageDraw
+
+from Mask2Former.mask2former import add_maskformer2_config
+from predictor import VisualizationDemo
 import traversable
 
-RGB_PATH = '../../data/inputs/'
-M2F_PATH = '../../data/m2f_outputs/'
-M2F_DATA_PATH = 'mask2former/'
-RGBDP_PATH = '../../data/rgbdp_outputs/'
+WINDOW_NAME = "mask2former demo"
+RGB_PATH = '../data/inputs/'
+M2F_PATH = '../data/m2f_outputs/'
+RGBDP_PATH = '../data/rgbdp_outputs/'
 TRAVERSABLE = traversable.TRAVERSABLE
 
 def generate_mapping(segments_info):
@@ -58,20 +74,72 @@ def prune_semantic_paths(semantic_paths, dpt_img):
     return # All remaining paths not pruned by obstacle detection using Binary Dilation and the Depths Image
     # TODO: Set flexibility hyperparameter (E.g. Path with similar ID in the previous / next row within x pixels)
 
-if __name__ == "__main__": 
-    
+def setup_cfg(args):
+    # load config from file and command-line arguments
+    cfg = get_cfg()
+    add_deeplab_config(cfg)
+    add_maskformer2_config(cfg)
+    cfg.merge_from_file(args.config_file)
+    cfg.merge_from_list(args.opts)
+    cfg.freeze()
+    return cfg
+
+def panoptic_segmentation(rgb_img_file):
+    # Perform Image Segmentation on the RGB Image    
+    mp.set_start_method("spawn", force=True)
+    args = argparse.Namespace(confidence_threshold=0.5, config_file='../data/configs/maskformer2_R50_bs16_160k.yaml', input=[rgb_img_file], opts=['MODEL.WEIGHTS', '../data/models/model_final_5c90d4.pkl'], output='../data/m2f_outputs/', video_input=None, webcam=False)
+    setup_logger(name="fvcore")
+    logger = setup_logger()
+    logger.info("Arguments: " + str(args))
+    cfg = setup_cfg(args)
+
+    demo = VisualizationDemo(cfg)
+
+    if args.input:
+        if len(args.input) == 1:
+            args.input = glob.glob(os.path.expanduser(args.input[0]))
+            assert args.input, "The input path(s) was not found"
+        for path in tqdm.tqdm(args.input, disable=not args.output):
+            # use PIL, to be consistent with evaluation
+            img = read_image(path, format="BGR")
+            start_time = time.time()
+            predictions, visualized_output, panoptic_seg, segments_info = demo.run_on_image(img)
+            logger.info(
+                "{}: {} in {:.2f}s".format(
+                    path,
+                    "detected {} instances".format(len(predictions["instances"]))
+                    if "instances" in predictions
+                    else "finished",
+                    time.time() - start_time,
+                )
+            )
+
+            if args.output:
+                if os.path.isdir(args.output):
+                    assert os.path.isdir(args.output), args.output
+                    out_filename = os.path.join(args.output, os.path.basename(path))
+                else:
+                    assert len(args.input) == 1, "Please specify a directory with args.output"
+                    out_filename = args.output
+                visualized_output.save(out_filename)
+            else:
+                cv2.namedWindow(WINDOW_NAME, cv2.WINDOW_NORMAL)
+                cv2.imshow(WINDOW_NAME, visualized_output.get_image()[:, :, ::-1])
+                if cv2.waitKey(0) == 27:
+                    break  # esc to quit
+        
+        return panoptic_seg, segments_info
+
+if __name__ == "__main__":
+
     # Initialise filenames
     rgb_img_file = RGB_PATH + sys.argv[1]
-    rgb_img_name = sys.argv[1].split(".")
-    m2f_img_file = M2F_PATH + rgb_img_name[0] + '.png'
-    m2f_panoptic_seg_file = M2F_DATA_PATH + 'panoptic_seg.pt'
-    m2f_segments_info_file = open(M2F_DATA_PATH + 'segments_info.json')
 
     # Read the necessary images and files from the data/ directory
     rgb_img = Image.open(rgb_img_file)
-    m2f_img = Image.open(m2f_img_file)
-    m2f_panoptic_seg = torch.load(m2f_panoptic_seg_file)
-    m2f_segments_info = json.load(m2f_segments_info_file)
+    m2f_panoptic_seg, m2f_segments_info = panoptic_segmentation(rgb_img_file)
+    IM_WIDTH, IM_HEIGHT = rgb_img.size
+    STEER_THRESHOLD = IM_WIDTH // 8
 
     # Read the Panoptic Segmentation data and calculate the traversable areas and traversable paths
     traversable_areas, traversable_paths = calculate_traversable_paths(m2f_panoptic_seg, m2f_segments_info)
@@ -89,53 +157,41 @@ if __name__ == "__main__":
 
     # Plot the traversable paths obtained onto the RGB Image
     draw = ImageDraw.Draw(rgb_img_traversable)
-    sample_path = -1
+    traversable_x = -1
+    traversable_y = -1
     for path in traversable_paths:
         # rgb_img_traversable_map[path['x'], path['y']] = (255,0,0,255)
         draw.ellipse((path['x'] - 2, path['y'] - 2, path['x'] + 2, path['y'] + 2), fill=(255, 0, 0))
         if path['y'] > (5 * rgb_img.size[1] / 8) and path['y'] < (7 * rgb_img.size[1] / 8):
-            sample_path = path['x']
+            traversable_x = path['x']
+            traversable_y = path['y']
 
     # Print out and Plot the Goal Destination for the agent
-    # goal_dest = [int(sys.argv[2]), int(sys.argv[3])]
+    print("\n################################")
+    print("Instructions to the Agent:")
+    print("################################\n")
     results = open('results.txt', 'a')
-    results.write(rgb_img_name[0] + '\n')
-    if sample_path == -1:
+    results.write(str(sys.argv[1]) + '\n')
+    if traversable_x == -1:
         print("No Path Available.")
-        print("Action to be taken: Rotate")
+        print("Action to be taken: Rotate Right.")
         results.write("No Path Available." + '\n')
-        results.write("Action to be taken: Rotate" + '\n')
+        results.write("Action to be taken: Rotate Right." + '\n')
     else:
-        # Manual creation of Goal Destination for even testing
-        chance = random.randint(1, 30)
-        if chance % 3 == 0:
-            goal_dest = [random.randint(0, sample_path - 1), int(rgb_img.size[1] / 2)]
-            print("Goal Destination given: " + str(goal_dest))
-            results.write("Goal Destination given: " + str(goal_dest) + '\n')
-        elif chance % 3 == 1:
-            goal_dest = [random.randint(sample_path + 1, rgb_img.size[0]), int(rgb_img.size[1] / 2)]
-            print("Goal Destination given: " + str(goal_dest))
-            results.write("Goal Destination given: " + str(goal_dest) + '\n')
+        print("Path found!")
+        print("Path found at X: " + str(traversable_x) + ", Y: " + str(traversable_y) + ".")
+        dx = (traversable_x - (IM_WIDTH // 2))
+        if dx > STEER_THRESHOLD:
+            results.write("Action to be taken: Rotate Right." + '\n')
+            print("Action to be taken: Rotate Right.")
+        elif dx < -STEER_THRESHOLD:
+            results.write("Action to be taken: Rotate Left." + '\n')
+            print("Action to be taken: Rotate Left.")
         else:
-            goal_dest = [sample_path, int(rgb_img.size[1] / 2)]
-            print("Goal Destination given: " + str(goal_dest))
-            results.write("Goal Destination given: " + str(goal_dest) + '\n')
+            results.write("Action to be taken: Move Forward." + '\n')
+            print("Action to be taken: Move Forward.")
     
-    draw.ellipse((goal_dest[0] - 5, goal_dest[1] - 5, goal_dest[0] + 5, goal_dest[1] + 5), fill=(0, 0, 0))
-
     # Save the copy as a separate Image
     rgb_img_traversable.save(RGBDP_PATH + "traversable_" + sys.argv[1], "PNG")
-
-    # Print out the actions to be taken by the agent
-    if sample_path < goal_dest[0]:
-        print("Action to be taken: Rotate Right")
-        results.write("Action to be taken: Rotate Right" + '\n')
-    elif sample_path > goal_dest[0]:
-        print("Action to be taken: Rotate Left")
-        results.write("Action to be taken: Rotate Left" + '\n')
-    else:
-        print("Action to be taken: Move Forward")
-        results.write("Action to be taken: Move Forward" + '\n')
-
     results.write('\n')
     results.close()

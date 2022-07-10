@@ -58,14 +58,15 @@ cd data/models/
 wget https://dl.fbaipublicfiles.com/maskformer/mask2former/ade20k/panoptic/maskformer2_R50_bs16_160k/model_final_5c90d4.pkl
 cd ../data/configs/
 curl -o maskformer2_R50_bs16_160k.yaml https://raw.githubusercontent.com/facebookresearch/Mask2Former/main/configs/ade20k/panoptic-segmentation/maskformer2_R50_bs16_160k.yaml
+curl -o Base-ADE20K-PanopticSegmentation.yaml https://raw.githubusercontent.com/facebookresearch/Mask2Former/main/configs/ade20k/panoptic-segmentation/Base-ADE20K-PanopticSegmentation.yaml
 
 ```
 
-Alternatively, you may download your model of choice from the [Mask2Former Model Zoo](https://github.com/facebookresearch/Mask2Former/blob/main/MODEL_ZOO.md), and the corresponding configuration file from the [Mask2Former Configs](https://github.com/facebookresearch/Mask2Former/tree/main/configs). Refer to [this guide](https://github.com/facebookresearch/Mask2Former/blob/main/GETTING_STARTED.md) for more information on the available models and corresponding configuration files. 
+Alternatively, you may download your model of choice from the [Mask2Former Model Zoo](https://github.com/facebookresearch/Mask2Former/blob/main/MODEL_ZOO.md), and the corresponding configuration files from the [Mask2Former Configs](https://github.com/facebookresearch/Mask2Former/tree/main/configs). Refer to [this guide](https://github.com/facebookresearch/Mask2Former/blob/main/GETTING_STARTED.md) for more information on the available models and corresponding configuration files. 
 
 If using a model other than ADE20K, you may also need to modify the list of categories that should be classified as traversable. This list can be found [here](https://github.com/lhw-1/rgbd-pathfinder/blob/main/src/standalone/traversable.py), with instructions on how to do so.
 
-Finally, change Line 10 of `bin/run.sh` to run with the correct model and the configuration file.
+Finally, change `bin/run.sh` to run with the correct model and the configuration file.
 
 ### Known Problems
 
@@ -84,9 +85,9 @@ python -m pip install -e .
 ## Running the Standalone RGBD-Pathfinder
 
 1. Copy the inputs into the `data/inputs/` directory. Currently, only images (.jpg / .png) are supported.
-2. Run the command `sh bin/run_demo.sh [IMAGE NAME WITH FILE EXTENSION] [GOAL X-COORDINATE] [GOAL Y-COORDINATE]`.
-* E.g. `sh bin/run.sh test.jpg 100 100`
-3. The results will be stored in the `data/rgbdp_outputs` directory once the script finishes running. 
+2. Run the command `sh bin/run.sh [IMAGE NAME WITH FILE EXTENSION]`.
+* E.g. `sh bin/run.sh test.jpg`
+3. The results will be stored in the `data/rgbdp_outputs/` directory once the script finishes running. 
 
 The script is also available as a ROS Node [here](https://github.com/lhw-1/rgbd-pathfinder-ros). This allows the script to be used in conjunction with ROS to issue appropriate commands to the robot agent.
 
