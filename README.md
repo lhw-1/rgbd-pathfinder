@@ -4,6 +4,8 @@ RGBD-Pathfinder is a script that takes in an RGB / RGB-D Image, as well as a Goa
 
 Currently, only image segmentation is used to find a traversable path; obstacle detection has not been implemented.
 
+The script is also available as a ROS Node [here](https://github.com/lhw-1/rgbd-pathfinder-ros). This allows the script to be used in conjunction with ROS to issue appropriate commands to the robot agent.
+
 ---
 
 ## Installation
@@ -88,8 +90,6 @@ python -m pip install -e .
 2. Run the command `sh bin/run.sh [IMAGE NAME WITH FILE EXTENSION]`.
 * E.g. `sh bin/run.sh test.jpg`
 3. The results will be stored in the `data/rgbdp_outputs/` directory once the script finishes running. 
-
-The script is also available as a ROS Node [here](https://github.com/lhw-1/rgbd-pathfinder-ros). This allows the script to be used in conjunction with ROS to issue appropriate commands to the robot agent.
 
 ---
 
