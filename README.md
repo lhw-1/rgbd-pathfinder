@@ -26,7 +26,7 @@ pip install -U opencv-python
 
 RGBD-Pathfinder relies on the [Mask2Former Segmentation tool](https://github.com/facebookresearch/Mask2Former), which in turn relies on the [Detectron2](https://github.com/facebookresearch/detectron2) module, to perform Image Segmentation and Visualisation. 
 
-### Installation: Mask2Former and Detectron2
+### Installation: Detectron2
 
 Install the `detectron2` module using the following commands from your project root directory.
 
