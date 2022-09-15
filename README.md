@@ -57,8 +57,18 @@ Next, use the commands below to download the ADE20K Panoptic Segmentation models
 ```
 sh bin/init.sh
 cd data/models/
+```
+
+This downloads the model:
+
+```
 wget https://dl.fbaipublicfiles.com/maskformer/mask2former/ade20k/panoptic/maskformer2_R50_bs16_160k/model_final_5c90d4.pkl
-cd ../data/configs/
+```
+
+This downloads the configs:
+
+```
+cd ../configs/
 curl -o maskformer2_R50_bs16_160k.yaml https://raw.githubusercontent.com/facebookresearch/Mask2Former/main/configs/ade20k/panoptic-segmentation/maskformer2_R50_bs16_160k.yaml
 curl -o Base-ADE20K-PanopticSegmentation.yaml https://raw.githubusercontent.com/facebookresearch/Mask2Former/main/configs/ade20k/panoptic-segmentation/Base-ADE20K-PanopticSegmentation.yaml
 
