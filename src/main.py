@@ -145,7 +145,7 @@ if __name__ == "__main__":
         # Suppose top left of image is (0, 0)
         # We want to crop from (IM_WIDTH / 3, 0) to (2 * IM_WIDTH / 3, IM_HEIGHT-1)
         img = cv2.imread(rgb_img_file)
-        crop_img = img[0:IM_HEIGHT-1, IM_WIDTH / 3:2 * IM_WIDTH / 3]
+        crop_img = img[0:IM_HEIGHT-1, IM_WIDTH // 3:2 * IM_WIDTH // 3]
         rgb_img_file = RGB_PATH + "cropped_" + sys.argv[1]
         cv2.imwrite(rgb_img_file, crop_img)
         rgb_img = Image.open(rgb_img_file)
