@@ -137,8 +137,20 @@ if __name__ == "__main__":
 
     # Read the necessary images and files from the data/ directory
     rgb_img = Image.open(rgb_img_file)
-    m2f_panoptic_seg, m2f_segments_info = panoptic_segmentation(rgb_img_file)
     IM_WIDTH, IM_HEIGHT = rgb_img.size
+
+    # For the case where the input image is 3 images-in-one
+    if IM_WIDTH > 1200 and IM_HEIGHT < 600:
+
+        # Suppose top left of image is (0, 0)
+        # We want to crop from (IM_WIDTH / 3, 0) to (2 * IM_WIDTH / 3, IM_HEIGHT-1)
+        img = cv2.imread(rgb_img_file)
+        crop_img = img[0:IM_HEIGHT-1, IM_WIDTH / 3:2 * IM_WIDTH / 3]
+        rgb_img_file = RGB_PATH + "cropped_" + sys.argv[1]
+        cv2.imwrite(rgb_img_file, crop_img)
+        rgb_img = Image.open(rgb_img_file)
+
+    m2f_panoptic_seg, m2f_segments_info = panoptic_segmentation(rgb_img_file)
     STEER_THRESHOLD = IM_WIDTH // 8
 
     # Read the Panoptic Segmentation data and calculate the traversable areas and traversable paths
